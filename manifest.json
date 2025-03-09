@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "TabStacker",
+  "version": "1.0",
+  "description": "TabStacker is a lightweight Chrome extension that helps you organize your online world by creating custom bookmark collections. Unlike traditional browser bookmarks, TabStacker lets you categorize websites into personalized groups.",
+  "permissions": ["bookmarks", "tabs", "storage", "contextMenus"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

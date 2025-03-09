@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TabStacker</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      width: 380px;
+      max-height: 600px;
+      overflow-y: auto;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Light mode (default) */
+    body {
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    
+    /* Dark mode */
+    body.dark-mode {
+      background-color: #1f2937;
+      color: #f9fafb;
+    }
+    
+    .group-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+    
+    .group-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #3b82f6;
+    }
+    
+    /* Dark mode card */
+    .dark-mode .group-card {
+      background-color: #374151 !important;
+      color: #f3f4f6;
+    }
+    
+    .dark-mode .group-card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+    
+    .bookmark-item {
+      transition: all 0.15s ease;
+    }
+    
+    .bookmark-item:hover {
+      background-color: #e5e7eb;
+    }
+    
+    .dark-mode .bookmark-item:hover {
+      background-color: #4b5563;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.2s;
+    }
+    
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      width: 320px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.2s, background-color 0.3s, color 0.3s;
+    }
+    
+    .dark-mode .modal-content {
+      background-color: #374151;
+      color: #f3f4f6;
+    }
+    
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+    
+    /* Theme switch styles */
+    .theme-switch {
+      cursor: pointer;
+      transition: transform 0.5s ease;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    
+    .theme-switch:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark-mode .theme-switch:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .theme-switch i {
+      font-size: 1.25rem;
+      transition: all 0.5s ease;
+    }
+    
+    /* Dark mode input styles */
+    .dark-mode input[type="text"] {
+      background-color: #4b5563;
+      color: #f3f4f6;
+      border-color: #6b7280;
+    }
+    
+    .dark-mode .text-gray-700,
+    .dark-mode .text-gray-800 {
+      color: #f3f4f6 !important;
+    }
+    
+    .dark-mode .text-gray-500,
+    .dark-mode .text-gray-600 {
+      color: #d1d5db !important;
+    }
+    
+    .dark-mode .bg-gray-50 {
+      background-color: #374151 !important;
+    }
+    
+    .dark-mode .border-gray-200,
+    .dark-mode .border-gray-300 {
+      border-color: #4b5563 !important;
+    }
+    
+    .dark-mode .text-gray-400 {
+      color: #9ca3af !important;
+    }
+
+    /* Link color in dark mode */
+    .dark-mode a.text-gray-700 {
+      color: #d1d5db !important;
+    }
+    
+    .dark-mode a.text-gray-700:hover {
+      color: #60a5fa !important;
+    }
+    
+    .dark-mode button.bg-gray-200 {
+      background-color: #4b5563 !important;
+      color: #f3f4f6;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+      <i class="fas fa-bookmark text-blue-500 mr-2"></i> TabStacker
+    </h1>
+    <div class="flex items-center space-x-3">
+      <div id="themeSwitch" class="theme-switch">
+        <i class="fas fa-sun text-yellow-500"></i>
+      </div>
+      <button id="createGroupBtn" class="btn-primary text-white px-4 py-2 rounded-lg shadow-md flex items-center">
+        <i class="fas fa-plus mr-2"></i> New Group
+      </button>
+    </div>
+  </div>
+  
+  <div id="groupsContainer" class="space-y-4">
+    <!-- Groups will be inserted here dynamically -->
+  </div>
+  
+  <!-- New Group Modal -->
+  <div id="createGroupModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-xl font-bold mb-4">Create New Group</h2>
+      <input type="text" id="groupNameInput" placeholder="Group Name" class="w-full p-2 border border-gray-300 rounded mb-4">
+      <div class="flex justify-end space-x-2">
+        <button id="cancelGroupBtn" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button id="saveGroupBtn" class="btn-primary text-white px-4 py-2 rounded">Create</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add Bookmark Modal -->
+  <div id="addBookmarkModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-xl font-bold mb-4">Add to <span id="currentGroupName"></span></h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="bookmarkTitle">Title</label>
+        <input type="text" id="bookmarkTitle" class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="bookmarkUrl">URL</label>
+        <input type="text" id="bookmarkUrl" class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <input type="hidden" id="currentGroupId">
+      <div class="flex justify-end space-x-2">
+        <button id="cancelBookmarkBtn" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+        <button id="saveBookmarkBtn" class="btn-primary text-white px-4 py-2 rounded">Add</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
