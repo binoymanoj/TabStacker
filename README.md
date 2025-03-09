@@ -1,7 +1,7 @@
 # TabStacker
 
 <div align="center">
-  <img src="icon.png" alt="TabStacker Logo" width="128" height="128">
+  <img src="icons/icon16.png" alt="TabStacker Logo" width="128" height="128">
   <h3>Organize your bookmarks into custom collections</h3>
 </div>
 
