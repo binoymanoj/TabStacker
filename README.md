@@ -87,8 +87,6 @@ Contributions are welcome! If you'd like to contribute:
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
 ## Development
 
 This extension is built with:
@@ -108,7 +106,8 @@ tabstacker/
 ├── background.js      # Background scripts
 ├── manifest.json      # Extension manifest
 ├── popup.html         # Main extension UI
-└── popup.js           # UI functionality```
+└── popup.js           # UI functionality
+```
 
 ## Privacy
 
